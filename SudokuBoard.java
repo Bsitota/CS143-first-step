@@ -1,53 +1,53 @@
-
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class SudokuBoard {
     private char[][] board;
-    
-    public SudokuBoard(String filename) {
+
+    public SudokuBoard(String Filename) throws FileNotFoundException {
         board = new char[9][9];
-        try (Scanner keyboard = new Scanner(new File(filename))) {
-           for (int r = 0; r < 9; r++) {
-              if (keyboard.hasNextLine()) {
-                  String line = keyboard.nextLine();
-                  if (line.length() == 9) {
-                    for (int c = 0; c < 9; c++) {
+        Scanner key = new Scanner(new File(Filename));
+        for (int r = 0; r < board.length; r++) {
+            if (key.hasNextLine()) {
+                String line = key.nextLine();
+                if (line.length() == board[r].length) {
+                    for (int c = 0; c < board[r].length; c++) {
                         board[r][c] = line.charAt(c);
                     }
-                  }
-                }            
-             }
-        } catch (IOException e) {
-            System.err.println("Error reading file " );
-              for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    board[i][j] = ' ';
+                } else {
+                    System.err.println("Warning: Invalid line length in file: " + line);
                 }
+            } else {
+                System.err.println("Warning: Incomplete file, less than 9 lines.");
+                break;
             }
         }
+        key.close();
     }
 
-   
-    public String toString() {
-    StringBuilder build = new StringBuilder();
-    build.append("---------------------\n");
-    for (int r = 0; r < board.length; r++) {
-        if (r % 3 == 0 && r != 0) {
-            build.append("|-------------------|\n");
-        }
-        build.append("| ");
-        for (int c = 0; c < board[0].length; c++) {
-            if (c % 3 == 0 && c != 0) {
-                build.append("| ");
+    
+    public String toString(){
+       StringBuilder print = new StringBuilder();
+       print.append(" -----------------------------\n");
+          for (int row = 0; row < board.length; row++) {
+            print.append("|");
+            for (int col = 0; col < board[row].length; col++) {
+                print.append(" ");
+                print.append(board[row][col]);
+                print.append(" ");
+                if ((col + 1) % 3 == 0) {
+                    print.append("|");
+                }
             }
-            String spot = board[r][c] == '.' ? "*" : "" + board[r][c]; 
-            build.append(spot).append(" ");
-        }
-        build.append("|\n");
+            print.append("\n");
+            if ((row + 1) % 3 == 0) {
+                print.append("------------------------------\n");
+            }
+          }
+          return print.toString();
+    
     }
-    build.append("---------------------\n");
-    return build.toString();
-}
+    
 }
